@@ -1,0 +1,25 @@
+<div class="container">
+  <h2>Your Feedbacks</h2>
+  
+  <div class="add-form">
+    <input [(ngModel)]="newNote" placeholder="Add a new feedback note" />
+    <button (click)="addFeedback()" class="btn add">Add</button>
+  </div>
+
+  <div *ngFor="let feedback of feedbacks" class="card">
+    <p><strong>Note:</strong> {{feedback.note}}</p>
+    <div class="actions">
+      <button (click)="selectFeedback(feedback)" class="btn edit">Edit</button>
+      <button (click)="deleteFeedback(feedback.id)" class="btn delete">Delete</button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedFeedback" class="modal">
+    <h3>Edit Feedback</h3>
+    <textarea [(ngModel)]="updatedNote"></textarea>
+    <div class="modal-actions">
+      <button (click)="saveFeedback()" class="btn save">Save</button>
+      <button (click)="cancelEdit()" class="btn cancel">Cancel</button>
+    </div>
+  </div>
+</div>

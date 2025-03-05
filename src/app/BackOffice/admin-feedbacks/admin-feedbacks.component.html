@@ -1,0 +1,21 @@
+<div class="container">
+  <h2>All Feedbacks (Admin View)</h2>
+  
+  <div *ngFor="let feedback of feedbacks" class="card">
+    <p><strong>Employee:</strong> {{feedback.employee.name}} {{feedback.employee.lastname}}</p>
+    <p><strong>Note:</strong> {{feedback.note}}</p>
+    <div class="actions">
+      <button (click)="selectFeedback(feedback)" class="btn edit">Edit</button>
+      <button (click)="deleteFeedback(feedback.id)" class="btn delete">Delete</button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedFeedback" class="modal">
+    <h3>Edit Feedback</h3>
+    <textarea [(ngModel)]="updatedNote"></textarea>
+    <div class="modal-actions">
+      <button (click)="saveFeedback()" class="btn save">Save</button>
+      <button (click)="cancelEdit()" class="btn cancel">Cancel</button>
+    </div>
+  </div>
+</div>
