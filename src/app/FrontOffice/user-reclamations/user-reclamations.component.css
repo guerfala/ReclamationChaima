@@ -160,3 +160,11 @@
   background-color: rgba(0, 0, 0, 0.4);
   z-index: -1;
 }
+
+
+.attachment-preview {
+  max-width: 100px;
+  max-height: 100px;
+  margin-top: 10px;
+}
+

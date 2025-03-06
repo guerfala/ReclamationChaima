@@ -20,8 +20,18 @@ export class ReclamationService {
     return this.http.get<Reclamation[]>(`${this.apiUrl}/user?userId=${userId}`);
   }
   
-  createReclamation(reclamation: Reclamation): Observable<Reclamation> {
-    return this.http.post<Reclamation>(this.apiUrl, reclamation);
+  createReclamation(reclamation: Reclamation, file?: File): Observable<Reclamation> {
+    const formData = new FormData();
+    formData.append('reclamation', new Blob([JSON.stringify(reclamation)], { type: 'application/json' }));
+    if (file) {
+        formData.append('file', file);
+    }
+    return this.http.post<Reclamation>(this.apiUrl, formData);
+  }
+
+  getFile(id: number): Observable<Blob> {
+    const url = `http://localhost:8082/reclamations/file/${id}`;
+    return this.http.get(url, { responseType: 'blob' });
   }
   
   updateReclamation(reclamation: Reclamation): Observable<Reclamation> {

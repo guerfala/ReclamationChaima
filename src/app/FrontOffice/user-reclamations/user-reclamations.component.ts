@@ -14,6 +14,7 @@ export class UserReclamationsComponent implements OnInit {
   selectedReclamation: Reclamation | null = null;
   updatedComment: string = '';
   userId: number | null = null;
+  selectedFile: File | null = null;
 
   constructor(
     private reclamationService: ReclamationService,
@@ -29,22 +30,52 @@ export class UserReclamationsComponent implements OnInit {
 
   loadUserReclamations(userId: number) {
     this.reclamationService.getUserReclamations(userId).subscribe(data => {
-      this.reclamations = data;
+        this.reclamations = data.map(reclamation => ({
+            ...reclamation,
+            fileUrl: reclamation.file ? this.createFileUrl(reclamation.file) : undefined // Set to undefined instead of null
+        }));
     });
   }
 
+  downloadFile(id: number, fileName: string) {
+    this.reclamationService.getFile(id).subscribe((file: Blob) => {
+        const url = window.URL.createObjectURL(file);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    });
+  }
+
+  onFileSelected(event: any) {
+      this.selectedFile = event.target.files[0];
+  }
+
   addReclamation() {
-    if (this.newComment.trim() && this.userId) {
-      const newReclamation: Reclamation = {
-        id: 0,
-        comment: this.newComment,
-        employee: { id: this.userId, name: '', lastname: '', email: '', phonenumber: 0, post: '', dateEmb: new Date(), salary: 0 }
-      };
-      this.reclamationService.createReclamation(newReclamation).subscribe(() => {
-        this.loadUserReclamations(this.userId!);
-        this.newComment = '';
-      });
-    }
+      if (this.newComment.trim() && this.userId) {
+          const newReclamation: Reclamation = {
+              id: null,
+              comment: this.newComment,
+              employee: { id: this.userId, name: '', lastname: '', email: '', phonenumber: 0, post: '', dateEmb: new Date(), salary: 0 }
+          };
+
+          this.reclamationService.createReclamation(
+              newReclamation, 
+              this.selectedFile ?? undefined
+          ).subscribe(() => {
+              this.loadUserReclamations(this.userId!);
+              this.newComment = '';
+              this.selectedFile = null;
+          });
+      }
+  }
+
+  createFileUrl(file: any): string {
+    const blob = new Blob([file], { type: file.type });
+    return URL.createObjectURL(blob);
   }
 
   deleteReclamation(id: number | undefined) {

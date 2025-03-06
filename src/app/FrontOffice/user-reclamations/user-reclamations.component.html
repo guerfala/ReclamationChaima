@@ -3,14 +3,23 @@
   
   <div class="add-form">
     <input [(ngModel)]="newComment" placeholder="Add a new reclamation comment" />
+    <input type="file" (change)="onFileSelected($event)" />
     <button (click)="addReclamation()" class="btn add">Add</button>
   </div>
 
   <div *ngFor="let reclamation of reclamations" class="card">
-    <p><strong>Comment:</strong> {{reclamation.comment}}</p>
+    <p *ngIf="reclamation.comment"><strong>Comment:</strong> {{reclamation.comment}}</p>
+    <p *ngIf="reclamation.fileName"><strong>Attachment:</strong> {{reclamation.fileName}}</p>
+
+    <div *ngIf="reclamation.fileUrl">
+        <button (click)="downloadFile(reclamation.id!, reclamation.fileName!)" class="btn download">
+            Download File
+        </button>
+    </div>
+
     <div class="actions">
-      <button (click)="selectReclamation(reclamation)" class="btn edit">Edit</button>
-      <button (click)="deleteReclamation(reclamation.id)" class="btn delete">Delete</button>
+        <button (click)="selectReclamation(reclamation)" class="btn edit">Edit</button>
+        <button (click)="deleteReclamation(reclamation.id!)" class="btn delete">Delete</button>
     </div>
   </div>
 
